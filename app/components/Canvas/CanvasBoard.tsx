@@ -45,6 +45,9 @@ export default function CanvasBoard() {
         <button onClick={() => engine?.drawDiamond(700, 300, 300, 300)}>
           Diamond
         </button>
+        <button onClick={() => engine?.drawLine(200, 200, 600, 600)}>
+          Line
+        </button>
       </div>
     </div>
   );

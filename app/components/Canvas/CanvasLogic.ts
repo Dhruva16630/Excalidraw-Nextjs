@@ -31,6 +31,12 @@ class CanvasLogic {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         this.roughCanvas.draw(diamond);
     }
+
+    drawLine(x1:number, y1:number, x2:number, y2:number) {
+        const arrow = this.roughCanvas.line(x1, y1, x2, y2, {stroke: "white", strokeWidth: 1,roughness: 1.3});
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        this.roughCanvas.draw(arrow);
+    }
 }
 
 export {CanvasLogic};
