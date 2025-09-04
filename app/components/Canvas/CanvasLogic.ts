@@ -11,7 +11,25 @@ class CanvasLogic {
         this.ctx = canvas.getContext("2d")!;
         this.roughCanvas = rough.canvas(canvas);
 
-        // this.initEventListeners();
+        this.initEventListeners();
+    }
+
+    private initEventListeners() {
+        this.canvas.addEventListener("mousedown", this.handleMouseDown);
+        this.canvas.addEventListener("mousemove", this.handleMouseMove);
+        this.canvas.addEventListener("mouseup", this.handleMouseUp);
+    }
+
+    private handleMouseDown = (e: MouseEvent) => {
+        // Placeholder for mouse down logic if needed
+    }
+
+    private handleMouseMove = (e: MouseEvent) => {
+        // Placeholder for mouse move logic if needed
+    }
+
+    private handleMouseUp = (e: MouseEvent) => {
+        // Placeholder for mouse up logic if needed
     }
 
     drawRectangle(x: number, y: number, width: number, height: number) {
@@ -38,48 +56,19 @@ class CanvasLogic {
         this.roughCanvas.draw(line)
     }
 
-    // drawArrow( x1: number, y1: number, x2: number, y2: number) {
-    //     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    //     this.ctx.beginPath();
-    //     let headlen = 10;
-    //     let dx = x2 - x1;
-    //     let dy = y2 - y1;
-    //     let angle = Math.atan2(dy, dx);
-    //     this.ctx.moveTo(x1, y1);
-    //     this.ctx.lineTo(x2, y2);
-    //     this.ctx.lineTo(x2 - headlen * Math.cos(angle - Math.PI / 6), y1 - headlen * Math.sin(angle - Math.PI / 6));
-    //     this.ctx.moveTo(x2, y2);
-    //     this.ctx.lineTo(x2 - headlen * Math.cos(angle + Math.PI / 6), y2 - headlen * Math.sin(angle + Math.PI / 6));
-    //     this.ctx.strokeStyle = "white";
-    //     this.ctx.lineWidth = 1;
-    //     this.ctx.stroke();
-
-    // }
-
 
     drawArrow(x1: number, y1: number, x2: number, y2: number) {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-
-        const headlen = 10; // size of arrow head
+        const headlen = 10; 
         const dx = x2 - x1;
         const dy = y2 - y1;
         const angle = Math.atan2(dy, dx);
-
         this.ctx.beginPath();
-        this.ctx.moveTo(x1, y1);          // start of line
-        this.ctx.lineTo(x2, y2);          // end of line
-
-        // arrow head (at end point)
-        this.ctx.lineTo(
-            x2 - headlen * Math.cos(angle - Math.PI / 6),
-            y2 - headlen * Math.sin(angle - Math.PI / 6)
-        );
+        this.ctx.moveTo(x1, y1);          
+        this.ctx.lineTo(x2, y2);          
+        this.ctx.lineTo(x2 - headlen * Math.cos(angle - Math.PI / 6), y2 - headlen * Math.sin(angle - Math.PI / 6));
         this.ctx.moveTo(x2, y2);
-        this.ctx.lineTo(
-            x2 - headlen * Math.cos(angle + Math.PI / 6),
-            y2 - headlen * Math.sin(angle + Math.PI / 6)
-        );
-
+        this.ctx.lineTo(x2 - headlen * Math.cos(angle + Math.PI / 6),y2 - headlen * Math.sin(angle + Math.PI / 6));
         this.ctx.strokeStyle = "white";
         this.ctx.lineWidth = 1;
         this.ctx.stroke();
