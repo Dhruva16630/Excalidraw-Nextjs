@@ -7,6 +7,7 @@ export default function CanvasBoard() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [engine, setEngine] = useState<CanvasLogic | null>(null);
   const [tool, setTool] = useState<"rectangle" | "circle" | "diamond" | "line" | "arrow" | null>(null);
+  const [storeShapes, setStoreShapes] = useState<[]>([]);
 
   useEffect(() => {
     if (!canvasRef.current) return;

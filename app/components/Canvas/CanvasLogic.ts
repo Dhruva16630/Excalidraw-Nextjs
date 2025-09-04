@@ -38,23 +38,53 @@ class CanvasLogic {
         this.roughCanvas.draw(line)
     }
 
-    drawArrow( x1: number, y1: number, x2: number, y2: number) {
+    // drawArrow( x1: number, y1: number, x2: number, y2: number) {
+    //     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    //     this.ctx.beginPath();
+    //     let headlen = 10;
+    //     let dx = x2 - x1;
+    //     let dy = y2 - y1;
+    //     let angle = Math.atan2(dy, dx);
+    //     this.ctx.moveTo(x1, y1);
+    //     this.ctx.lineTo(x2, y2);
+    //     this.ctx.lineTo(x2 - headlen * Math.cos(angle - Math.PI / 6), y1 - headlen * Math.sin(angle - Math.PI / 6));
+    //     this.ctx.moveTo(x2, y2);
+    //     this.ctx.lineTo(x2 - headlen * Math.cos(angle + Math.PI / 6), y2 - headlen * Math.sin(angle + Math.PI / 6));
+    //     this.ctx.strokeStyle = "white";
+    //     this.ctx.lineWidth = 1;
+    //     this.ctx.stroke();
+
+    // }
+
+
+    drawArrow(x1: number, y1: number, x2: number, y2: number) {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+        const headlen = 10; // size of arrow head
+        const dx = x2 - x1;
+        const dy = y2 - y1;
+        const angle = Math.atan2(dy, dx);
+
         this.ctx.beginPath();
-        let headlen = 10;
-        let dx = x1 - x2;
-        let dy = y1 - y2;
-        let angle = Math.atan2(dy, dx);
+        this.ctx.moveTo(x1, y1);          // start of line
+        this.ctx.lineTo(x2, y2);          // end of line
+
+        // arrow head (at end point)
+        this.ctx.lineTo(
+            x2 - headlen * Math.cos(angle - Math.PI / 6),
+            y2 - headlen * Math.sin(angle - Math.PI / 6)
+        );
         this.ctx.moveTo(x2, y2);
-        this.ctx.lineTo(x1, y1);
-        this.ctx.lineTo(x1 - headlen * Math.cos(angle - Math.PI / 6), y1 - headlen * Math.sin(angle - Math.PI / 6));
-        this.ctx.moveTo(x1, y1);
-        this.ctx.lineTo(x1 - headlen * Math.cos(angle + Math.PI / 6), y1 - headlen * Math.sin(angle + Math.PI / 6));
+        this.ctx.lineTo(
+            x2 - headlen * Math.cos(angle + Math.PI / 6),
+            y2 - headlen * Math.sin(angle + Math.PI / 6)
+        );
+
         this.ctx.strokeStyle = "white";
         this.ctx.lineWidth = 1;
         this.ctx.stroke();
-        
     }
+
 }
 
 export { CanvasLogic };
