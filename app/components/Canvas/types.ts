@@ -4,3 +4,6 @@ export type Shape =
     | { type: "diamond"; x: number; y: number; width: number; height: number }
     | { type: "line"; x1: number; y1: number; x2: number; y2: number }
     | { type: "arrow"; x1: number; y1: number; x2: number; y2: number };
+
+
+export type Tool = "rectangle" | "circle" | "diamond" | "line" | "arrow" | null;
