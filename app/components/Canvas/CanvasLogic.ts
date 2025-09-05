@@ -1,6 +1,6 @@
 import rough from "roughjs";
 import { RoughCanvas } from "roughjs/bin/canvas";
-import { Tool } from "./types";
+import { Shapes, Tool } from "./types";
 
 class CanvasLogic {
     private canvas: HTMLCanvasElement;
@@ -11,7 +11,8 @@ class CanvasLogic {
     private isDrawing: boolean = false;
     private hasMoved: boolean = false;
     private tool: Tool = null;
-    
+    private exsistingShapes: Shapes[] = [];
+
 
 
     constructor(canvas: HTMLCanvasElement) {
@@ -32,6 +33,85 @@ class CanvasLogic {
         this.canvas.addEventListener("mouseup", this.handleMouseUp);
     }
 
+
+
+    private redraw(previewShape?: Shapes) {
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+        for (const shape of this.exsistingShapes) {
+            this.drawexsitngShapes(shape);
+        }
+
+        if (previewShape) {
+            this.drawexsitngShapes(previewShape);
+        }
+    }
+    drawexsitngShapes(shape: Shapes) {
+        switch (shape.tool) {
+            case "rectangle":
+            case "rectangle":
+                this.roughCanvas.rectangle(
+                    shape.startX,
+                    shape.startY,
+                    shape.endX - shape.startX,
+                    shape.endY - shape.startY,
+                    { stroke: "white", strokeWidth: 0.8, roughness: 0.6 }
+                );
+                break;
+            case "circle":
+                const radius = Math.sqrt(
+                    Math.pow(shape.endX - shape.startX, 2) +
+                    Math.pow(shape.endY - shape.startY, 2)
+                );
+                this.roughCanvas.circle(shape.startX, shape.startY, radius, {
+                    stroke: "white",
+                    strokeWidth: 0.8,
+                    roughness: 0.6,
+                });
+                break;
+            case "diamond":
+                this.roughCanvas.polygon(
+                    [
+                        [shape.startX, shape.startY - (shape.endY - shape.startY) / 2],
+                        [shape.startX + (shape.endX - shape.startX) / 2, shape.startY],
+                        [shape.startX, shape.startY + (shape.endY - shape.startY) / 2],
+                        [shape.startX - (shape.endX - shape.startX) / 2, shape.startY],
+                    ],
+                    { stroke: "white", strokeWidth: 0.8, roughness: 0.6 }
+                );
+                break;
+            case "line":
+                this.roughCanvas.line(
+                    shape.startX,
+                    shape.startY,
+                    shape.endX,
+                    shape.endY,
+                    { stroke: "white", strokeWidth: 0.8, roughness: 0.6 }
+                );
+                break;
+            case "arrow":
+                const headlen = 10;
+                const dx = shape.endX - shape.startX;
+                const dy = shape.endY - shape.startY;
+                const angle = Math.atan2(dy, dx);
+                this.ctx.beginPath();
+                this.ctx.moveTo(shape.startX, shape.startY);
+                this.ctx.lineTo(shape.endX, shape.endY);
+                this.ctx.lineTo(
+                    shape.endX - headlen * Math.cos(angle - Math.PI / 6),
+                    shape.endY - headlen * Math.sin(angle - Math.PI / 6)
+                );
+                this.ctx.moveTo(shape.endX, shape.endY);
+                this.ctx.lineTo(
+                    shape.endX - headlen * Math.cos(angle + Math.PI / 6),
+                    shape.endY - headlen * Math.sin(angle + Math.PI / 6)
+                );
+                this.ctx.strokeStyle = "white";
+                this.ctx.lineWidth = 1;
+                this.ctx.stroke();
+                break;
+        }
+    }
     handleMouseDown = (e: MouseEvent) => {
         this.isDrawing = true;
         this.hasMoved = false;
@@ -49,6 +129,14 @@ class CanvasLogic {
         const currentX = e.clientX - rect.left;
         const currentY = e.clientY - rect.top;
 
+      const previewShape: Shapes = {
+      tool: this.tool,
+      startX: this.startX,
+      startY: this.startY,
+      endX: currentX,
+      endY: currentY,
+    };
+
         switch (this.tool) {
             case "rectangle":
                 const rectangle = this.roughCanvas.rectangle(this.startX, this.startY, currentX - this.startX, currentY - this.startY, { stroke: "white", strokeWidth: 0.8, roughness: 0.6 });
@@ -59,7 +147,7 @@ class CanvasLogic {
                 const radius = Math.sqrt(
                     Math.pow(currentX - this.startX, 2) + Math.pow(currentY - this.startY, 2)
                 );
-                const circle = this.roughCanvas.circle(this.startX, this.startY, radius, { stroke: "white", strokeWidth: 0.8, roughness: 0.6});
+                const circle = this.roughCanvas.circle(this.startX, this.startY, radius, { stroke: "white", strokeWidth: 0.8, roughness: 0.6 });
                 this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
                 this.roughCanvas.draw(circle);
                 break;
@@ -92,10 +180,8 @@ class CanvasLogic {
                 this.ctx.strokeStyle = "white";
                 this.ctx.lineWidth = 1;
                 this.ctx.stroke();
-
-
-
         }
+        this.redraw(previewShape);
 
 
 
@@ -109,6 +195,13 @@ class CanvasLogic {
         const rect = this.canvas.getBoundingClientRect();
         const endX = e.clientX - rect.left;
         const endY = e.clientY - rect.top;
+        const newShape: Shapes = {
+            tool: this.tool,
+            startX: this.startX,
+            startY: this.startY,
+            endX: endX,
+            endY: endY,
+        }
 
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
@@ -121,7 +214,7 @@ class CanvasLogic {
                 const radius = Math.sqrt(
                     Math.pow(endX - this.startX, 2) + Math.pow(endY - this.startY, 2)
                 );
-                this.roughCanvas.circle(this.startX, this.startY, radius,{ stroke: "white", strokeWidth: 0.8, roughness: 0.6 });
+                this.roughCanvas.circle(this.startX, this.startY, radius, { stroke: "white", strokeWidth: 0.8, roughness: 0.6 });
                 break;
             case "diamond":
                 this.roughCanvas.polygon([[this.startX, this.startY - (endY - this.startY) / 2], [this.startX + (endX - this.startX) / 2, this.startY], [this.startX, this.startY + (endY - this.startY) / 2], [this.startX - (endX - this.startX) / 2, this.startY]], { stroke: "white", strokeWidth: 0.8, roughness: 0.6 });
@@ -150,7 +243,11 @@ class CanvasLogic {
                 this.ctx.stroke();
                 break;
         }
+        this.exsistingShapes.push(newShape);
+        this.redraw();
     }
+
+
 
 }
 
