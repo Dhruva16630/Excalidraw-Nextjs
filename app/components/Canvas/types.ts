@@ -14,5 +14,6 @@ export interface Shapes {
   startY: number;
   endX: number;
   endY: number;
+  path?: Path2D
 }
 
