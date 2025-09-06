@@ -20,6 +20,12 @@ class CanvasLogic {
         this.ctx = canvas.getContext("2d")!;
         this.roughCanvas = rough.canvas(canvas);
 
+        // const savedShapes = localStorage.getItem("existingShapes");
+        // if(savedShapes){
+        //     this.exsistingShapes = JSON.parse(savedShapes);
+        //     this.redraw();
+        // }
+
 
     }
     setTool(tool: Tool) {
@@ -27,6 +33,10 @@ class CanvasLogic {
         this.initEventListeners();
 
     }
+
+    // private saveShapesToLocalStorage() {
+    //     localStorage.setItem("existingShapes", JSON.stringify(this.exsistingShapes));
+    // }
     initEventListeners() {
         this.canvas.addEventListener("mousedown", this.handleMouseDown);
         this.canvas.addEventListener("mousemove", this.handleMouseMove);
@@ -244,6 +254,7 @@ class CanvasLogic {
                 break;
         }
         this.exsistingShapes.push(newShape);
+        //  this.saveShapesToLocalStorage();
         this.redraw();
     }
 
