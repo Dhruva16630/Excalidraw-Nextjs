@@ -49,7 +49,7 @@ export default function CanvasBoard() {
         ref={canvasRef}
         className="w-screen h-screen bg-[#121212]"
       />
-      <div className="absolute top-8 left-96 gap-2 rounded-2xl bg-white flex p-2">
+      <div className="absolute top-8 left-96 -translate-1/2 gap-2 rounded-2xl bg-white flex p-2">
         <button onClick={() =>{setTool("rectangle")}} >
           Rect
         </button>
@@ -64,6 +64,12 @@ export default function CanvasBoard() {
         </button>
         <button onClick={()=>{setTool("arrow")}}>
           Arrow
+        </button>
+        <button onClick={()=>{setTool("pencil")}}>
+          Pencil
+        </button>
+        <button onClick={()=>{setTool("text")}}>
+          Write
         </button>
         
       </div>
