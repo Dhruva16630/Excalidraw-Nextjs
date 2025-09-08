@@ -4,7 +4,7 @@ import { Shapes, Tool } from "./types";
 
 class CanvasLogic {
   private canvas: HTMLCanvasElement;
-  private ctx: CanvasRenderingContext2D
+  private ctx: CanvasRenderingContext2D;
   private roughCanvas: RoughCanvas;
   private startX: number = 0;
   private startY: number = 0;
@@ -12,7 +12,8 @@ class CanvasLogic {
   private hasMoved: boolean = false;
   private tool: Tool = null;
   private exsistingShapes: Shapes[] = [];
-
+  public shapeIdCounter:number = 0;
+  private ERASER_SIZE = 10;
 
 
 
@@ -158,100 +159,63 @@ class CanvasLogic {
   }
 
 
-  // private enableTextInput(x: number, y: number) {
-  //   const rect = this.canvas.getBoundingClientRect();
 
-  //   const input = document.createElement("input");
-  //   input.type = "text";
-  //   input.style.position = "absolute";
-  //   input.style.left = `${rect.left + x}px`;
-  //   input.style.top = `${rect.top + y}px`;
-  //   input.style.background = "transparent";
-  //   input.style.border = "none";
-  //   input.style.outline = "none";
-  //   input.style.color = "white";
-  //   input.style.font = "20px Arial";
-  //   document.body.appendChild(input);
 
-  //   input.focus();
 
-  //   let saved = false;
-  //   const saveText = () => {
-  //     if (saved) return;
-  //     saved = true;
 
-  //     if (input.value.trim() !== "") {
-  //       if (value !== "") {
-  //         const newShape: Shapes = {
-  //           tool: "text",
-  //           startX: x,
-  //           startY: y,
-  //           endX: x,
-  //           endY: y,
-  //           text: input.value,
-  //         }
-  //         this.exsistingShapes.push(newShape);
-  //         this.saveShapesToLocalStorage();
-  //         this.redraw();
-  //       };
-
-  //     }
-
-  //     if (input.parentNode) {
-  //       input.parentNode.removeChild(input);
-  //     }
-  //   };
-
-  //   input.addEventListener("blur", saveText);
-  //   input.addEventListener("keydown", (ev) => {
-  //     if (ev.key === "Enter") saveText();
-  //   });
-  // }
 
   enableTextInput(x: number, y: number) {
-  const rect = this.canvas.getBoundingClientRect();
+    const rect = this.canvas.getBoundingClientRect();
 
-  const input = document.createElement("input");
-  input.type = "text";
-  input.style.position = "absolute";
-  input.style.left = `${rect.left + x}px`;
-  input.style.top = `${rect.top + y}px`;
-  input.style.background = "transparent";
-  input.style.border = "none";
-  input.style.outline = "none";
-  input.style.color = "white";
-  input.style.font = "20px Arial";
+    const input = document.createElement("input");
+    input.type = "text";
+    input.style.position = "absolute";
+    input.style.left = `${rect.left + x}px`;
+    input.style.top = `${rect.top + y}px`;
+    input.style.background = "transparent";
+    input.style.border = "none";
+    input.style.outline = "none";
+    input.style.color = "white";
+    input.style.font = "20px Arial";
 
-  document.body.appendChild(input);
-  input.focus();
+    document.body.appendChild(input);
+    input.focus();
 
-  const saveText = () => {
-    const value = input.value.trim();
-    if (value !== "") {
-      const newShape: Shapes = {
-        tool: "text",
-        startX: x,
-        startY: y,
-        endX: x,
-        endY: y,
-        text: value,   // ✅ Only saved if not empty
-      };
-      this.exsistingShapes.push(newShape);
-      this.saveShapesToLocalStorage();
-      this.redraw();
-    }
-    if (input.parentNode) {
-      input.parentNode.removeChild(input);
-    }
-  };
+    let saved = false; // ✅ guard flag
 
-  input.addEventListener("blur", saveText);
-  input.addEventListener("keydown", (ev) => {
-    if (ev.key === "Enter") {
-      saveText();
-    }
-  });
-}
+    const saveText = () => {
+      if (saved) return; // prevent double execution
+      saved = true;
+
+      const value = input.value.trim();
+      if (value !== "") {
+        const newShape: Shapes = {
+          id:this.shapeIdCounter,
+          tool: "text",
+          startX: x,
+          startY: y,
+          endX: x,
+          endY: y,
+          text: value,
+        };
+        this.exsistingShapes.push(newShape);
+        this.saveShapesToLocalStorage();
+        this.redraw();
+      }
+
+      if (input.parentNode) {
+        input.parentNode.removeChild(input);
+      }
+    };
+
+    input.addEventListener("blur", saveText);
+    input.addEventListener("keydown", (ev) => {
+      if (ev.key === "Enter") {
+        saveText();
+      }
+    });
+  }
+
 
 
   private onDoubleClick = (e: MouseEvent) => {
@@ -263,7 +227,11 @@ class CanvasLogic {
     this.enableTextInput(mouseX, mouseY);
   };
 
-
+  createShape(shape: Shapes) {
+  shape.id = ++this.shapeIdCounter;
+  this.exsistingShapes.push(shape);
+  this.saveShapesToLocalStorage();
+}
 
   handleMouseDown = (e: MouseEvent) => {
     this.isDrawing = true;
@@ -276,6 +244,7 @@ class CanvasLogic {
 
     if (this.tool === "pencil") {
       const newShape: Shapes = {
+        id:this.shapeIdCounter,
         tool: "pencil",
         startX: this.startX,
         startY: this.startY,
@@ -284,6 +253,15 @@ class CanvasLogic {
         points: [{ x: this.startX, y: this.startY }],
       };
       this.exsistingShapes.push(newShape);
+    }
+
+    // if(this.tool === "eraser") return
+    if (this.tool === "eraser") {
+      const rect = this.canvas.getBoundingClientRect();
+      const mouseX = e.clientX - rect.left;
+      const mouseY = e.clientY - rect.top;
+      this.eraseObjectAt(mouseX, mouseY);
+      return;
     }
 
 
@@ -298,6 +276,7 @@ class CanvasLogic {
     const currentY = e.clientY - rect.top;
 
     const previewShape: Shapes = {
+      id:this.shapeIdCounter,
       tool: this.tool,
       startX: this.startX,
       startY: this.startY,
@@ -309,6 +288,14 @@ class CanvasLogic {
       const currentShape = this.exsistingShapes[this.exsistingShapes.length - 1];
       currentShape.points?.push({ x: currentX, y: currentY });
       this.redraw(); // redraw all shapes including pencil
+      return;
+    }
+
+    if (this.tool === "eraser" && this.isDrawing) {
+      const rect = this.canvas.getBoundingClientRect();
+      const mouseX = e.clientX - rect.left;
+      const mouseY = e.clientY - rect.top;
+      this.eraseObjectAt(mouseX, mouseY);
       return;
     }
 
@@ -372,6 +359,7 @@ class CanvasLogic {
     const endX = e.clientX - rect.left;
     const endY = e.clientY - rect.top;
     const newShape: Shapes = {
+      id: this.shapeIdCounter,
       tool: this.tool,
       startX: this.startX,
       startY: this.startY,
@@ -435,10 +423,91 @@ class CanvasLogic {
         this.ctx.stroke();
         break;
     }
-    this.exsistingShapes.push(newShape);
+    
+    // this.exsistingShapes.push(newShape);
+    // this.saveShapesToLocalStorage();
+    this.createShape(newShape);
+    this.redraw();
+  }
+
+  
+  private isPointInShape(x: number, y: number, shape: Shapes): boolean {
+    switch (shape.tool) {
+      case "rectangle":
+      case "diamond":
+        return (
+          x >= Math.min(shape.startX, shape.endX) &&
+          x <= Math.max(shape.startX, shape.endX) &&
+          y >= Math.min(shape.startY, shape.endY) &&
+          y <= Math.max(shape.startY, shape.endY)
+        );
+
+      case "circle":
+        const r = Math.sqrt(
+          (shape.endX - shape.startX) ** 2 + (shape.endY - shape.startY) ** 2
+        );
+        const dist = Math.sqrt(
+          (x - shape.startX) ** 2 + (y - shape.startY) ** 2
+        );
+        return dist <= r;
+
+      case "line":
+      case "arrow":
+        // Distance from point to line
+        const dx = shape.endX - shape.startX;
+        const dy = shape.endY - shape.startY;
+        const length = Math.sqrt(dx * dx + dy * dy);
+        if (length === 0) return false;
+        const t =
+          ((x - shape.startX) * dx + (y - shape.startY) * dy) / (length * length);
+        const closestX = shape.startX + t * dx;
+        const closestY = shape.startY + t * dy;
+        const distToLine = Math.sqrt((x - closestX) ** 2 + (y - closestY) ** 2);
+        return distToLine <= this.ERASER_SIZE;
+
+      case "text":
+        this.ctx.font = "20px Arial";
+        const textWidth = this.ctx.measureText(shape.text || "").width;
+        const textHeight = 20; // approx font size
+        return (
+          x >= shape.startX &&
+          x <= shape.startX + textWidth &&
+          y <= shape.startY &&
+          y >= shape.startY - textHeight
+        );
+
+      case "pencil":
+        // Just erase whole freehand if cursor touches its bounding box
+        return (
+          x >= Math.min(shape.startX, shape.endX) - this.ERASER_SIZE &&
+          x <= Math.max(shape.startX, shape.endX) + this.ERASER_SIZE &&
+          y >= Math.min(shape.startY, shape.endY) - this.ERASER_SIZE &&
+          y <= Math.max(shape.startY, shape.endY) + this.ERASER_SIZE
+        );
+
+      default:
+        return false;
+    }
+  }
+
+  // Object eraser: delete full shape if cursor touches it
+ private eraseObjectAt(x: number, y: number) {
+  const touchedShapes = this.exsistingShapes.filter(shape =>
+    this.isPointInShape(x, y, shape)
+  );
+
+  if (touchedShapes.length > 0) {
+    // Pick shape with largest ID (latest drawn)
+    const target = touchedShapes.reduce((a, b) => (a.id > b.id ? a : b));
+
+    this.exsistingShapes = this.exsistingShapes.filter(
+      shape => shape.id !== target.id
+    );
+
     this.saveShapesToLocalStorage();
     this.redraw();
   }
+}
 
 
 

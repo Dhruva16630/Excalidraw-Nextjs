@@ -18,6 +18,7 @@ export default function CanvasBoard() {
     {key:"line", value:"Line"},
     {key:"arrow", value:"Arrow"},
     {key:"text", value:"Write"},
+    {key:"eraser", value:"Eraser"}
   ]
 
   useEffect(() => {

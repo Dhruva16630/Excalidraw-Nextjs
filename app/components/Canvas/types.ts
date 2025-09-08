@@ -1,13 +1,14 @@
 
 
-export type Tool = "rectangle" | "circle" | "diamond" | "line" | "arrow" | "pencil" | "text" | null;
+export type Tool = "rectangle" | "circle" | "diamond" | "line" | "arrow" | "pencil" | "text" |"eraser"| null;
 
 export interface Shapes {
+  id:number;
   tool: Tool;
   startX: number;
   startY: number;
-  endX?: number;
-  endY?: number;
+  endX: number;
+  endY: number;
   path?: Path2D;
   points?: { x:number , y:number }[];
   text?: string;
