@@ -51,7 +51,7 @@ class CanvasLogic {
 
 
   }
-  
+
 
   private redraw(previewShape?: Shapes) {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -65,100 +65,150 @@ class CanvasLogic {
     }
   }
   drawexsitngShapes(shape: Shapes) {
-    if( shape.endX && shape.endY) 
-    switch (shape.tool) {
-      case "rectangle":
-        this.roughCanvas.rectangle(
-          shape.startX,
-          shape.startY,
-          shape.endX - shape.startX,
-          shape.endY - shape.startY,
-          { stroke: "white", strokeWidth: 0.8, roughness: 0.6, seed: 12345 }
-        );
-        break;
-      case "circle":
-        const radius = Math.sqrt(
-          Math.pow(shape.endX - shape.startX, 2) +
-          Math.pow(shape.endY - shape.startY, 2)
-        );
-        this.roughCanvas.circle(shape.startX, shape.startY, radius, {
-          stroke: "white",
-          strokeWidth: 0.8,
-          roughness: 0.6,
-          seed: 12345,
-        });
-        break;
-      case "diamond":
-        this.roughCanvas.polygon(
-          [
-            [shape.startX, shape.startY - (shape.endY - shape.startY) / 2],
-            [shape.startX + (shape.endX - shape.startX) / 2, shape.startY],
-            [shape.startX, shape.startY + (shape.endY - shape.startY) / 2],
-            [shape.startX - (shape.endX - shape.startX) / 2, shape.startY],
-          ],
-          { stroke: "white", strokeWidth: 0.8, roughness: 0.6, seed: 12345 }
-        );
-        break;
-      case "line":
-        this.roughCanvas.line(
-          shape.startX,
-          shape.startY,
-          shape.endX,
-          shape.endY,
-          { stroke: "white", strokeWidth: 0.8, roughness: 0.6, seed: 12345 }
-        );
-        break;
-      case "arrow":
-        const headlen = 10;
-        const dx = shape.endX - shape.startX;
-        const dy = shape.endY - shape.startY;
-        const angle = Math.atan2(dy, dx);
-        this.ctx.beginPath();
-        this.ctx.moveTo(shape.startX, shape.startY);
-        this.ctx.lineTo(shape.endX, shape.endY);
-        this.ctx.lineTo(
-          shape.endX - headlen * Math.cos(angle - Math.PI / 6),
-          shape.endY - headlen * Math.sin(angle - Math.PI / 6)
-        );
-        this.ctx.moveTo(shape.endX, shape.endY);
-        this.ctx.lineTo(
-          shape.endX - headlen * Math.cos(angle + Math.PI / 6),
-          shape.endY - headlen * Math.sin(angle + Math.PI / 6)
-        );
-        this.ctx.strokeStyle = "white";
-        this.ctx.lineWidth = 1;
-        this.ctx.stroke();
-        break;
-      case "pencil":
-        if (shape.points && shape.points.length > 1) {
+    if (shape.endX && shape.endY)
+      switch (shape.tool) {
+        case "rectangle":
+          this.roughCanvas.rectangle(
+            shape.startX,
+            shape.startY,
+            shape.endX - shape.startX,
+            shape.endY - shape.startY,
+            { stroke: "white", strokeWidth: 0.8, roughness: 0.6, seed: 12345 }
+          );
+          break;
+        case "circle":
+          const radius = Math.sqrt(
+            Math.pow(shape.endX - shape.startX, 2) +
+            Math.pow(shape.endY - shape.startY, 2)
+          );
+          this.roughCanvas.circle(shape.startX, shape.startY, radius, {
+            stroke: "white",
+            strokeWidth: 0.8,
+            roughness: 0.6,
+            seed: 12345,
+          });
+          break;
+        case "diamond":
+          this.roughCanvas.polygon(
+            [
+              [shape.startX, shape.startY - (shape.endY - shape.startY) / 2],
+              [shape.startX + (shape.endX - shape.startX) / 2, shape.startY],
+              [shape.startX, shape.startY + (shape.endY - shape.startY) / 2],
+              [shape.startX - (shape.endX - shape.startX) / 2, shape.startY],
+            ],
+            { stroke: "white", strokeWidth: 0.8, roughness: 0.6, seed: 12345 }
+          );
+          break;
+        case "line":
+          this.roughCanvas.line(
+            shape.startX,
+            shape.startY,
+            shape.endX,
+            shape.endY,
+            { stroke: "white", strokeWidth: 0.8, roughness: 0.6, seed: 12345 }
+          );
+          break;
+        case "arrow":
+          const headlen = 10;
+          const dx = shape.endX - shape.startX;
+          const dy = shape.endY - shape.startY;
+          const angle = Math.atan2(dy, dx);
           this.ctx.beginPath();
-          this.ctx.moveTo(shape.points[0].x, shape.points[0].y);
-
-          for (let i = 1; i < shape.points.length - 1; i++) {
-            const midX = (shape.points[i].x + shape.points[i + 1].x) / 2;
-            const midY = (shape.points[i].y + shape.points[i + 1].y) / 2;
-            this.ctx.quadraticCurveTo(shape.points[i].x, shape.points[i].y, midX, midY);
-          }
-
+          this.ctx.moveTo(shape.startX, shape.startY);
+          this.ctx.lineTo(shape.endX, shape.endY);
+          this.ctx.lineTo(
+            shape.endX - headlen * Math.cos(angle - Math.PI / 6),
+            shape.endY - headlen * Math.sin(angle - Math.PI / 6)
+          );
+          this.ctx.moveTo(shape.endX, shape.endY);
+          this.ctx.lineTo(
+            shape.endX - headlen * Math.cos(angle + Math.PI / 6),
+            shape.endY - headlen * Math.sin(angle + Math.PI / 6)
+          );
           this.ctx.strokeStyle = "white";
-          this.ctx.lineWidth = 2.5;   // thickness
-          this.ctx.lineCap = "round";
-          this.ctx.lineJoin = "round";
+          this.ctx.lineWidth = 1;
           this.ctx.stroke();
-        }
-        break;
-      case "text":
-        if (shape.text) {
-          this.ctx.font = "20px Arial";
-          this.ctx.fillStyle = "white";
-          this.ctx.fillText(shape.text, shape.startX, shape.startY);
-        }
-        break;
-    }
+          break;
+        case "pencil":
+          if (shape.points && shape.points.length > 1) {
+            this.ctx.beginPath();
+            this.ctx.moveTo(shape.points[0].x, shape.points[0].y);
+
+            for (let i = 1; i < shape.points.length - 1; i++) {
+              const midX = (shape.points[i].x + shape.points[i + 1].x) / 2;
+              const midY = (shape.points[i].y + shape.points[i + 1].y) / 2;
+              this.ctx.quadraticCurveTo(shape.points[i].x, shape.points[i].y, midX, midY);
+            }
+
+            this.ctx.strokeStyle = "white";
+            this.ctx.lineWidth = 2.5;   // thickness
+            this.ctx.lineCap = "round";
+            this.ctx.lineJoin = "round";
+            this.ctx.stroke();
+          }
+          break;
+        case "text":
+          if (shape.text) {
+            this.ctx.font = "20px Arial";
+            this.ctx.fillStyle = "white";
+            this.ctx.fillText(shape.text, shape.startX, shape.startY);
+          }
+          break;
+      }
   }
 
-  
-private enableTextInput(x: number, y: number) {
+
+  // private enableTextInput(x: number, y: number) {
+  //   const rect = this.canvas.getBoundingClientRect();
+
+  //   const input = document.createElement("input");
+  //   input.type = "text";
+  //   input.style.position = "absolute";
+  //   input.style.left = `${rect.left + x}px`;
+  //   input.style.top = `${rect.top + y}px`;
+  //   input.style.background = "transparent";
+  //   input.style.border = "none";
+  //   input.style.outline = "none";
+  //   input.style.color = "white";
+  //   input.style.font = "20px Arial";
+  //   document.body.appendChild(input);
+
+  //   input.focus();
+
+  //   let saved = false;
+  //   const saveText = () => {
+  //     if (saved) return;
+  //     saved = true;
+
+  //     if (input.value.trim() !== "") {
+  //       if (value !== "") {
+  //         const newShape: Shapes = {
+  //           tool: "text",
+  //           startX: x,
+  //           startY: y,
+  //           endX: x,
+  //           endY: y,
+  //           text: input.value,
+  //         }
+  //         this.exsistingShapes.push(newShape);
+  //         this.saveShapesToLocalStorage();
+  //         this.redraw();
+  //       };
+
+  //     }
+
+  //     if (input.parentNode) {
+  //       input.parentNode.removeChild(input);
+  //     }
+  //   };
+
+  //   input.addEventListener("blur", saveText);
+  //   input.addEventListener("keydown", (ev) => {
+  //     if (ev.key === "Enter") saveText();
+  //   });
+  // }
+
+  enableTextInput(x: number, y: number) {
   const rect = this.canvas.getBoundingClientRect();
 
   const input = document.createElement("input");
@@ -171,29 +221,25 @@ private enableTextInput(x: number, y: number) {
   input.style.outline = "none";
   input.style.color = "white";
   input.style.font = "20px Arial";
-  document.body.appendChild(input);
 
+  document.body.appendChild(input);
   input.focus();
 
-  let saved = false;
   const saveText = () => {
-    if (saved) return;
-    saved = true;
-
-    if (input.value.trim() !== "") {
+    const value = input.value.trim();
+    if (value !== "") {
       const newShape: Shapes = {
         tool: "text",
         startX: x,
         startY: y,
         endX: x,
         endY: y,
-        text: input.value,
+        text: value,   // ✅ Only saved if not empty
       };
       this.exsistingShapes.push(newShape);
       this.saveShapesToLocalStorage();
       this.redraw();
     }
-
     if (input.parentNode) {
       input.parentNode.removeChild(input);
     }
@@ -201,18 +247,21 @@ private enableTextInput(x: number, y: number) {
 
   input.addEventListener("blur", saveText);
   input.addEventListener("keydown", (ev) => {
-    if (ev.key === "Enter") saveText();
+    if (ev.key === "Enter") {
+      saveText();
+    }
   });
 }
 
-private onDoubleClick = (e: MouseEvent) => {
-  if (this.tool !== "text") return;
 
-  const rect = this.canvas.getBoundingClientRect();
-  const mouseX = e.clientX - rect.left;
-  const mouseY = e.clientY - rect.top;
-  this.enableTextInput(mouseX, mouseY);
-};
+  private onDoubleClick = (e: MouseEvent) => {
+    if (this.tool !== "text") return;
+
+    const rect = this.canvas.getBoundingClientRect();
+    const mouseX = e.clientX - rect.left;
+    const mouseY = e.clientY - rect.top;
+    this.enableTextInput(mouseX, mouseY);
+  };
 
 
 
