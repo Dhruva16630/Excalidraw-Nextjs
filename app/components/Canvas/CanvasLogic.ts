@@ -14,6 +14,12 @@ class CanvasLogic {
   private exsistingShapes: Shapes[] = [];
   public shapeIdCounter: number = 0;
   private ERASER_SIZE = 10;
+  private scale = 1;
+  private offsetX = 0;
+  private offsetY = 0;
+  private isPanning = false;
+  private panStartX = 0;
+  private panStartY = 0;
 
 
 
@@ -29,6 +35,25 @@ class CanvasLogic {
       this.redraw();
     }
 
+    this.canvas.addEventListener("mousedown", (e) => {
+      if (this.tool === "grab") {
+        this.isPanning = true;
+        this.panStartX = e.clientX - this.offsetX;
+        this.panStartY = e.clientY - this.offsetY;
+      }
+    });
+    this.canvas.addEventListener("mousemove", (e) => {
+      if (this.isPanning) {
+        this.offsetX = e.clientX - this.panStartX;
+        this.offsetY = e.clientY - this.panStartY;
+        this.redraw();
+      }
+    });
+    this.canvas.addEventListener("mouseup", () => {
+      this.isPanning = false;
+    });
+
+
 
   }
   setTool(tool: Tool) {
@@ -37,6 +62,19 @@ class CanvasLogic {
 
   }
 
+  private screenToWorld(x: number, y: number): { x: number; y: number } {
+    return {
+      x: (x - this.offsetX) / this.scale,
+      y: (y - this.offsetY) / this.scale,
+    };
+  }
+
+  private worldToScreen(x: number, y: number): { x: number; y: number } {
+    return {
+      x: x * this.scale + this.offsetX,
+      y: y * this.scale + this.offsetY,
+    };
+  }
 
 
 
@@ -55,8 +93,10 @@ class CanvasLogic {
 
 
   private redraw(previewShape?: Shapes) {
+    this.ctx.setTransform(1, 0, 0, 1, 0, 0);
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
+    this.ctx.setTransform(this.scale, 0, 0, this.scale, this.offsetX, this.offsetY);
     for (const shape of this.exsistingShapes) {
       this.drawexsitngShapes(shape);
     }
@@ -238,12 +278,15 @@ class CanvasLogic {
     this.hasMoved = false;
     if (!this.tool) return;
     const rect = this.canvas.getBoundingClientRect();
-    this.startX = e.clientX - rect.left;
-    this.startY = e.clientY - rect.top;
+    const mouseX = e.clientX - rect.left;
+    const mouseY= e.clientY - rect.top;
+    const {x:worldX, y:worldY } = this.screenToWorld(mouseX, mouseY);
+     this.startX = worldX;
+     this.startY = worldY
 
     if (this.tool === "eraser") {
 
-      this.eraseObjectAt(this.startX, this.startY);
+      this.eraseObjectAt(mouseX, mouseY);
       return;
     }
 
@@ -252,11 +295,11 @@ class CanvasLogic {
       const newShape: Shapes = {
         id: ++this.shapeIdCounter,
         tool: "pencil",
-        startX: this.startX,
-        startY: this.startY,
-        endX: this.startX,
-        endY: this.startY,
-        points: [{ x: this.startX, y: this.startY }],
+        startX: worldX,
+        startY: worldY,
+        endX: worldX,
+        endY: worldY,
+        points: [{ x: worldX, y: worldY }],
       };
       this.exsistingShapes.push(newShape);
     }
@@ -272,25 +315,25 @@ class CanvasLogic {
     const rect = this.canvas.getBoundingClientRect();
     const currentX = e.clientX - rect.left;
     const currentY = e.clientY - rect.top;
-
+     const { x: worldX, y: worldY } = this.screenToWorld(currentX, currentY);
     const previewShape: Shapes = {
       id: this.shapeIdCounter,
       tool: this.tool,
       startX: this.startX,
       startY: this.startY,
-      endX: currentX,
-      endY: currentY,
+      endX: worldX,
+      endY: worldY,
     };
 
     if (this.tool === "eraser" && this.isDrawing) {
 
-      this.eraseObjectAt(currentX, currentY);
+      this.eraseObjectAt(worldX, worldY);
       return;
     }
 
     if (this.tool === "pencil") {
       const currentShape = this.exsistingShapes[this.exsistingShapes.length - 1];
-      currentShape.points?.push({ x: currentX, y: currentY });
+      currentShape.points?.push({ x: worldX, y: worldY });
       this.redraw(); // redraw all shapes including pencil
       return;
     }
@@ -298,7 +341,7 @@ class CanvasLogic {
 
     switch (this.tool) {
       case "rectangle":
-        const rectangle = this.roughCanvas.rectangle(this.startX, this.startY, currentX - this.startX, currentY - this.startY, { stroke: "white", strokeWidth: 0.8, roughness: 0.6, seed: 12345 });
+        const rectangle = this.roughCanvas.rectangle(this.startX, this.startY, worldX - this.startX, worldY - this.startY, { stroke: "white", strokeWidth: 0.8, roughness: 0.6, seed: 12345 });
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         this.roughCanvas.draw(rectangle);
         break;
@@ -355,13 +398,15 @@ class CanvasLogic {
     const rect = this.canvas.getBoundingClientRect();
     const endX = e.clientX - rect.left;
     const endY = e.clientY - rect.top;
+    const { x: worldX, y: worldY } = this.screenToWorld(endX, endY);
+
     const newShape: Shapes = {
       id: ++this.shapeIdCounter,
       tool: this.tool,
       startX: this.startX,
       startY: this.startY,
-      endX: endX,
-      endY: endY,
+      endX: worldX,
+      endY: worldY,
     }
     if (this.tool === "eraser") return;
 

@@ -1,6 +1,6 @@
 
 
-export type Tool = "rectangle" | "circle" | "diamond" | "line" | "arrow" | "pencil" | "text" |"eraser"| null;
+export type Tool = "rectangle" | "circle" | "diamond" | "line" | "arrow" | "pencil" | "text" |"eraser"|"grab" | null;
 
 export interface Shapes {
   id:number;

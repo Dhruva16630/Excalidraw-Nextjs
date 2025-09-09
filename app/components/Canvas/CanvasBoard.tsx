@@ -11,6 +11,7 @@ export default function CanvasBoard() {
 
 
   const tools: { key:string, value:string }[]= [
+    {key: "grab", value:"Grab"},
     {key:"rectangle", value:"Rect"},
     {key:"circle", value:"Circle"},
     {key:"diamond", value:"Diamond"},
