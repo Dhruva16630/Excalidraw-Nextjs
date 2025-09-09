@@ -53,6 +53,31 @@ class CanvasLogic {
       this.isPanning = false;
     });
 
+    this.canvas.addEventListener("wheel", (e: WheelEvent) => {
+
+      if (!e.ctrlKey) return; // only zoom when ctrl is pressed
+      e.preventDefault();
+
+      const zoomFactor = 1.1; // 10% per step
+      const rect = this.canvas.getBoundingClientRect();
+      const mouseX = e.clientX - rect.left;
+      const mouseY = e.clientY - rect.top;
+
+      const prevScale = this.scale;
+      if (e.deltaY < 0) {
+        this.scale *= zoomFactor; // zoom in
+      } else {
+        this.scale /= zoomFactor; // zoom out
+      }
+
+      // keep mouse under same position
+      this.offsetX -= (mouseX - this.offsetX) * (this.scale / prevScale - 1);
+      this.offsetY -= (mouseY - this.offsetY) * (this.scale / prevScale - 1);
+
+      this.redraw();
+    }, { passive: false });
+
+
 
 
   }
@@ -90,6 +115,27 @@ class CanvasLogic {
 
 
   }
+
+  public resetZoom() {
+    this.scale = 1;
+    this.offsetX = 0;
+    this.offsetY = 0;
+    this.redraw();
+  }
+
+  public zoomAtCenter(factor: number) {
+    const centerX = this.canvas.width / 2;
+    const centerY = this.canvas.height / 2;
+    const worldPos = this.screenToWorld(centerX, centerY);
+
+    this.scale *= factor;
+    const newScreen = this.worldToScreen(worldPos.x, worldPos.y);
+    this.offsetX += centerX - newScreen.x;
+    this.offsetY += centerY - newScreen.y;
+
+    this.redraw();
+  }
+
 
 
   private redraw(previewShape?: Shapes) {
@@ -279,10 +325,10 @@ class CanvasLogic {
     if (!this.tool) return;
     const rect = this.canvas.getBoundingClientRect();
     const mouseX = e.clientX - rect.left;
-    const mouseY= e.clientY - rect.top;
-    const {x:worldX, y:worldY } = this.screenToWorld(mouseX, mouseY);
-     this.startX = worldX;
-     this.startY = worldY
+    const mouseY = e.clientY - rect.top;
+    const { x: worldX, y: worldY } = this.screenToWorld(mouseX, mouseY);
+    this.startX = worldX;
+    this.startY = worldY
 
     if (this.tool === "eraser") {
 
@@ -315,7 +361,7 @@ class CanvasLogic {
     const rect = this.canvas.getBoundingClientRect();
     const currentX = e.clientX - rect.left;
     const currentY = e.clientY - rect.top;
-     const { x: worldX, y: worldY } = this.screenToWorld(currentX, currentY);
+    const { x: worldX, y: worldY } = this.screenToWorld(currentX, currentY);
     const previewShape: Shapes = {
       id: this.shapeIdCounter,
       tool: this.tool,
@@ -553,7 +599,6 @@ class CanvasLogic {
     }
   }
 
-  // Object eraser: delete full shape if cursor touches it
   private eraseObjectAt(x: number, y: number) {
     const touchedShapes = this.exsistingShapes.filter(shape =>
       this.isPointInShape(x, y, shape)

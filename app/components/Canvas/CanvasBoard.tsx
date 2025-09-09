@@ -78,6 +78,24 @@ export default function CanvasBoard() {
           ))}
         </div>
       </div>
+      <div className="fixed bottom-5 left-4 flex justify-center gap-1 bg-white rounded-lg p-1">
+        <button className="hover:bg-gray-200 px-3 py-1 rounded-2xl"
+          onClick={() => engine?.zoomAtCenter(1.1)}
+        >
+        Plus
+      </button>
+      <button className="hover:bg-gray-200 px-3 py-1 rounded-2xl"
+        onClick={()=>engine?.resetZoom()}
+      >
+        Reset
+      </button>
+      <button className="hover:bg-gray-200 px-3 py-1 rounded-2xl"
+        onClick={() =>engine?.zoomAtCenter(0.9)}
+      >
+        Minus
+      </button>
+      </div>
+      
     </div>
   );
 }
