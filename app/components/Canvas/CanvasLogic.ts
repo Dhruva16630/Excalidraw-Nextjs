@@ -12,7 +12,7 @@ class CanvasLogic {
   private hasMoved: boolean = false;
   private tool: Tool = null;
   private exsistingShapes: Shapes[] = [];
-  public shapeIdCounter:number = 0;
+  public shapeIdCounter: number = 0;
   private ERASER_SIZE = 10;
 
 
@@ -190,7 +190,7 @@ class CanvasLogic {
       const value = input.value.trim();
       if (value !== "") {
         const newShape: Shapes = {
-          id:this.shapeIdCounter,
+          id: this.shapeIdCounter,
           tool: "text",
           startX: x,
           startY: y,
@@ -228,10 +228,10 @@ class CanvasLogic {
   };
 
   createShape(shape: Shapes) {
-  shape.id = ++this.shapeIdCounter;
-  this.exsistingShapes.push(shape);
-  this.saveShapesToLocalStorage();
-}
+    shape.id = ++this.shapeIdCounter;
+    this.exsistingShapes.push(shape);
+    this.saveShapesToLocalStorage();
+  }
 
   handleMouseDown = (e: MouseEvent) => {
     this.isDrawing = true;
@@ -241,10 +241,16 @@ class CanvasLogic {
     this.startX = e.clientX - rect.left;
     this.startY = e.clientY - rect.top;
 
+    if (this.tool === "eraser") {
+
+      this.eraseObjectAt(this.startX, this.startY);
+      return;
+    }
+
 
     if (this.tool === "pencil") {
       const newShape: Shapes = {
-        id:this.shapeIdCounter,
+        id: this.shapeIdCounter,
         tool: "pencil",
         startX: this.startX,
         startY: this.startY,
@@ -255,14 +261,6 @@ class CanvasLogic {
       this.exsistingShapes.push(newShape);
     }
 
-    // if(this.tool === "eraser") return
-    if (this.tool === "eraser") {
-      const rect = this.canvas.getBoundingClientRect();
-      const mouseX = e.clientX - rect.left;
-      const mouseY = e.clientY - rect.top;
-      this.eraseObjectAt(mouseX, mouseY);
-      return;
-    }
 
 
 
@@ -276,13 +274,19 @@ class CanvasLogic {
     const currentY = e.clientY - rect.top;
 
     const previewShape: Shapes = {
-      id:this.shapeIdCounter,
+      id: this.shapeIdCounter,
       tool: this.tool,
       startX: this.startX,
       startY: this.startY,
       endX: currentX,
       endY: currentY,
     };
+
+    if (this.tool === "eraser" && this.isDrawing) {
+
+      this.eraseObjectAt(currentX, currentY);
+      return;
+    }
 
     if (this.tool === "pencil") {
       const currentShape = this.exsistingShapes[this.exsistingShapes.length - 1];
@@ -291,13 +295,6 @@ class CanvasLogic {
       return;
     }
 
-    if (this.tool === "eraser" && this.isDrawing) {
-      const rect = this.canvas.getBoundingClientRect();
-      const mouseX = e.clientX - rect.left;
-      const mouseY = e.clientY - rect.top;
-      this.eraseObjectAt(mouseX, mouseY);
-      return;
-    }
 
     switch (this.tool) {
       case "rectangle":
@@ -359,13 +356,14 @@ class CanvasLogic {
     const endX = e.clientX - rect.left;
     const endY = e.clientY - rect.top;
     const newShape: Shapes = {
-      id: this.shapeIdCounter,
+      id: ++this.shapeIdCounter,
       tool: this.tool,
       startX: this.startX,
       startY: this.startY,
       endX: endX,
       endY: endY,
     }
+    if(this.tool === "eraser") return;
 
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
@@ -423,14 +421,14 @@ class CanvasLogic {
         this.ctx.stroke();
         break;
     }
-    
+
     // this.exsistingShapes.push(newShape);
     // this.saveShapesToLocalStorage();
     this.createShape(newShape);
     this.redraw();
   }
 
-  
+
   private isPointInShape(x: number, y: number, shape: Shapes): boolean {
     switch (shape.tool) {
       case "rectangle":
@@ -491,23 +489,23 @@ class CanvasLogic {
   }
 
   // Object eraser: delete full shape if cursor touches it
- private eraseObjectAt(x: number, y: number) {
-  const touchedShapes = this.exsistingShapes.filter(shape =>
-    this.isPointInShape(x, y, shape)
-  );
-
-  if (touchedShapes.length > 0) {
-    // Pick shape with largest ID (latest drawn)
-    const target = touchedShapes.reduce((a, b) => (a.id > b.id ? a : b));
-
-    this.exsistingShapes = this.exsistingShapes.filter(
-      shape => shape.id !== target.id
+  private eraseObjectAt(x: number, y: number) {
+    const touchedShapes = this.exsistingShapes.filter(shape =>
+      this.isPointInShape(x, y, shape)
     );
 
-    this.saveShapesToLocalStorage();
-    this.redraw();
+    if (touchedShapes.length > 0) {
+      // Pick shape with largest ID (latest drawn)
+      const target = touchedShapes.reduce((a, b) => (a.id > b.id ? a : b));
+
+      this.exsistingShapes = this.exsistingShapes.filter(
+        shape => shape.id !== target.id
+      );
+
+      this.saveShapesToLocalStorage();
+      this.redraw();
+    }
   }
-}
 
 
 
