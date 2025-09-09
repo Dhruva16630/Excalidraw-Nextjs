@@ -82,7 +82,7 @@ class CanvasLogic {
             Math.pow(shape.endX - shape.startX, 2) +
             Math.pow(shape.endY - shape.startY, 2)
           );
-          this.roughCanvas.circle(shape.startX, shape.startY, radius, {
+          this.roughCanvas.circle(shape.startX, shape.startY, radius * 2, {
             stroke: "white",
             strokeWidth: 0.8,
             roughness: 0.6,
@@ -190,7 +190,7 @@ class CanvasLogic {
       const value = input.value.trim();
       if (value !== "") {
         const newShape: Shapes = {
-          id: this.shapeIdCounter,
+          id: ++this.shapeIdCounter,
           tool: "text",
           startX: x,
           startY: y,
@@ -250,7 +250,7 @@ class CanvasLogic {
 
     if (this.tool === "pencil") {
       const newShape: Shapes = {
-        id: this.shapeIdCounter,
+        id: ++this.shapeIdCounter,
         tool: "pencil",
         startX: this.startX,
         startY: this.startY,
@@ -306,7 +306,7 @@ class CanvasLogic {
         const radius = Math.sqrt(
           Math.pow(currentX - this.startX, 2) + Math.pow(currentY - this.startY, 2)
         );
-        const circle = this.roughCanvas.circle(this.startX, this.startY, radius, { stroke: "white", strokeWidth: 0.8, roughness: 0.6, seed: 12345 });
+        const circle = this.roughCanvas.circle(this.startX, this.startY, radius * 2, { stroke: "white", strokeWidth: 0.8, roughness: 0.6, seed: 12345 });
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         this.roughCanvas.draw(circle);
         break;
@@ -363,7 +363,7 @@ class CanvasLogic {
       endX: endX,
       endY: endY,
     }
-    if(this.tool === "eraser") return;
+    if (this.tool === "eraser") return;
 
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
@@ -392,7 +392,7 @@ class CanvasLogic {
         const radius = Math.sqrt(
           Math.pow(endX - this.startX, 2) + Math.pow(endY - this.startY, 2)
         );
-        this.roughCanvas.circle(this.startX, this.startY, radius, { stroke: "white", strokeWidth: 0.8, roughness: 0.6, seed: 12345 });
+        this.roughCanvas.circle(this.startX, this.startY, radius * 2, { stroke: "white", strokeWidth: 0.8, roughness: 0.6, seed: 12345 });
         break;
       case "diamond":
         this.roughCanvas.polygon([[this.startX, this.startY - (endY - this.startY) / 2], [this.startX + (endX - this.startX) / 2, this.startY], [this.startX, this.startY + (endY - this.startY) / 2], [this.startX - (endX - this.startX) / 2, this.startY]], { stroke: "white", strokeWidth: 0.8, roughness: 0.6, seed: 12345 });
@@ -428,6 +428,16 @@ class CanvasLogic {
     this.redraw();
   }
 
+  private pointToSegmentDistance(px: number, py: number, x1: number, y1: number, x2: number, y2: number) {
+    const dx = x2 - x1, dy = y2 - y1;
+    const len2 = dx * dx + dy * dy;
+    if (len2 === 0) return Math.hypot(px - x1, py - y1);
+    let t = ((px - x1) * dx + (py - y1) * dy) / len2;
+    t = Math.max(0, Math.min(1, t));
+    const cx = x1 + t * dx, cy = y1 + t * dy;
+    return Math.hypot(px - cx, py - cy);
+  }
+
 
   private isPointInShape(x: number, y: number, shape: Shapes): boolean {
     switch (shape.tool) {
@@ -454,13 +464,13 @@ class CanvasLogic {
         // Distance from point to line
         const dx = shape.endX - shape.startX;
         const dy = shape.endY - shape.startY;
-        const length = Math.sqrt(dx * dx + dy * dy);
-        if (length === 0) return false;
-        const t =
-          ((x - shape.startX) * dx + (y - shape.startY) * dy) / (length * length);
+        const length = Math.hypot(dx, dy);
+        if (length === 0) return Math.hypot(x - shape.startX, y - shape.startY) <= this.ERASER_SIZE;
+        let t = ((x - shape.startX) * dx + (y - shape.startY) * dy) / (length * length);
+        t = Math.max(0, Math.min(1, t)); // clamp to segment
         const closestX = shape.startX + t * dx;
         const closestY = shape.startY + t * dy;
-        const distToLine = Math.sqrt((x - closestX) ** 2 + (y - closestY) ** 2);
+        const distToLine = Math.hypot(x - closestX, y - closestY);
         return distToLine <= this.ERASER_SIZE;
 
       case "text":
@@ -476,12 +486,22 @@ class CanvasLogic {
 
       case "pencil":
         // Just erase whole freehand if cursor touches its bounding box
-        return (
-          x >= Math.min(shape.startX, shape.endX) - this.ERASER_SIZE &&
-          x <= Math.max(shape.startX, shape.endX) + this.ERASER_SIZE &&
-          y >= Math.min(shape.startY, shape.endY) - this.ERASER_SIZE &&
-          y <= Math.max(shape.startY, shape.endY) + this.ERASER_SIZE
-        );
+        if (shape.path) {
+          // widen stroke for an eraser tolerance
+          const prev = this.ctx.lineWidth;
+          this.ctx.lineWidth = (2.5 /* your draw width */) + this.ERASER_SIZE * 2;
+          const hit = this.ctx.isPointInStroke(shape.path as Path2D, x, y);
+          this.ctx.lineWidth = prev;
+          return hit;
+        }
+
+        if (shape.points && shape.points.length > 1) {
+          for (let i = 0; i < shape.points.length - 1; i++) {
+            const p1 = shape.points[i], p2 = shape.points[i + 1];
+            const d = this.pointToSegmentDistance(x, y, p1.x, p1.y, p2.x, p2.y);
+            if (d <= this.ERASER_SIZE + 2.5 * 0.5) return true;
+          }
+        }
 
       default:
         return false;
