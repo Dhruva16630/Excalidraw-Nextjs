@@ -111,6 +111,12 @@ class CanvasLogic {
     this.canvas.addEventListener("mousemove", this.handleMouseMove);
     this.canvas.addEventListener("mouseup", this.handleMouseUp);
     this.canvas.addEventListener("dblclick", this.onDoubleClick);
+    window.addEventListener("resize",() => this.redraw());
+    window.addEventListener("visibilitychange",()=>{
+      if(document.visibilityState === "visible"){
+        this.redraw();
+      }
+    })
 
 
 
@@ -246,7 +252,7 @@ class CanvasLogic {
       }
   }
 
-
+  
 
 
 
