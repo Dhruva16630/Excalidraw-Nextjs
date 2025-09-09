@@ -135,7 +135,9 @@ class CanvasLogic {
 
     this.redraw();
   }
-
+  getZoomedPercentage(){
+    return this.scale;
+  }
 
 
   private redraw(previewShape?: Shapes) {
