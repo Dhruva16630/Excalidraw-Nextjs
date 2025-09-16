@@ -12,5 +12,6 @@ export interface Shapes {
   path?: Path2D;
   points?: { x:number , y:number }[];
   text?: string;
+  
 }
 
