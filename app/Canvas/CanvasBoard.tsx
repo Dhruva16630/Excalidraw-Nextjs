@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { CanvasLogic } from "./CanvasLogic";
 import { Tool } from "./types";
+import ToolBar from "../components/ToolBar";
 
 export default function CanvasBoard() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -75,19 +76,9 @@ export default function CanvasBoard() {
         ref={canvasRef}
         className="w-screen h-screen bg-[#121212]"
       />
-      <div className="fixed top-5 w-full flex justify-center">
-        <div className="gap-2  rounded-2xl bg-white flex p-2">
-          {tools.map(({ key, value }) => (
-            <button
-              key={key}
-              onClick={() => setTool(key as Tool)}
-              className={`px-3 py-1 rounded-lg transition ${tool === key ? "bg-blue-500 text-white" : "bg-gray-100 text-gray-800 hover:bg-gray-200"}`}
-            >
-              {value}
-            </button>
-          ))}
-        </div>
-      </div>
+      <div className="fixed top-3 w-full flex justify-center">
+      <ToolBar tool={tool} setTool={setTool} />
+    </div>
       <div className="fixed bottom-5 left-4 flex justify-center gap-1 bg-white rounded-lg p-1">
         <button className="hover:bg-gray-200 px-3 py-1 rounded-2xl"
           onClick={() => engine?.zoomAtCenter(1.1)}

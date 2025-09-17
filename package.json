@@ -12,6 +12,7 @@
     "next": "15.4.6",
     "react": "19.1.0",
     "react-dom": "19.1.0",
+    "remixicon": "^4.6.0",
     "roughjs": "^4.6.6"
   },
   "devDependencies": {

@@ -1,4 +1,4 @@
-import CanvasBoard from "./components/Canvas/CanvasBoard";
+import CanvasBoard from "./Canvas/CanvasBoard";
 
 export default function Home() {
   return (
