@@ -2,12 +2,13 @@ import React from "react";
 
 interface ButtonsProps {
   onClick: () => void;
-  className: string;
+  className?: string;
   icon?: React.ReactNode;
   imgSrc?: string;
   text?: string;
   num?: number; 
-  label?: string;
+  children?: React.ReactNode;
+  
 }
 
 const Buttons: React.FC<ButtonsProps> = ({
@@ -17,7 +18,8 @@ const Buttons: React.FC<ButtonsProps> = ({
   imgSrc,
   text,
   num,
-  label
+  children,
+  
 }) => {
   return (
     <button
@@ -40,11 +42,7 @@ const Buttons: React.FC<ButtonsProps> = ({
         </span>
       )}
 
-      {label && (
-        <span className="absolute bottom-full mb-1 hidden group-hover:block text-xs bg-black text-white px-2 py-1 rounded">
-        {label}
-      </span>
-      )}
+      {children}
     </button>
   );
 };
