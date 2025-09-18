@@ -5,6 +5,7 @@ import { CanvasLogic } from "./CanvasLogic";
 import { Tool } from "./types";
 import ToolBar from "../components/ToolBar";
 import ZoomToolbar from "../components/ZoomToolbar";
+import Menu from "../components/Menu";
 
 export default function CanvasBoard() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -79,7 +80,7 @@ export default function CanvasBoard() {
       />
       <div className="fixed top-3 w-full flex justify-center">
       <ToolBar tool={tool} setTool={setTool} />
-    </div>
+     </div>
       <div className="fixed bottom-3 left-4">
         <ZoomToolbar 
          zoomPercentage={zoomPercentage}
@@ -89,7 +90,9 @@ export default function CanvasBoard() {
         />
         
       </div>
-
+      <div className="fixed top-3 left-4">
+        <Menu/>
+      </div>
     </div>
   );
 }
