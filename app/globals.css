@@ -7,3 +7,9 @@
 
 @import "remixicon/fonts/remixicon.css";
 
+@font-face {
+  font-family: "Excalifont";
+  src: url("/fonts/Font.woff2") format("woff2");
+  font-weight: normal;
+  font-style: normal;
+}

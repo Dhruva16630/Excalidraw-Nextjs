@@ -168,7 +168,7 @@ class CanvasLogic {
             shape.startY,
             shape.endX - shape.startX,
             shape.endY - shape.startY,
-            { stroke: "white", strokeWidth: 0.8, roughness: 0.6, seed: 12345 }
+            { stroke: "white", strokeWidth: 0.8, roughness: 0.6,seed: 12345,  }
           );
           break;
         case "circle":
@@ -244,7 +244,7 @@ class CanvasLogic {
           break;
         case "text":
           if (shape.text) {
-            this.ctx.font = "20px Arial";
+            this.ctx.font = "28px Excalifont";
             this.ctx.fillStyle = "white";
             this.ctx.fillText(shape.text, shape.startX, shape.startY);
           }
@@ -270,7 +270,7 @@ class CanvasLogic {
     input.style.border = "none";
     input.style.outline = "none";
     input.style.color = "white";
-    input.style.font = "20px Arial";
+    input.style.font = "28px Excalifont";
 
     document.body.appendChild(input);
     input.focus();
@@ -573,7 +573,7 @@ class CanvasLogic {
         return distToLine <= this.ERASER_SIZE;
 
       case "text":
-        this.ctx.font = "20px Arial";
+        this.ctx.font = "28px Excalifont";
         const textWidth = this.ctx.measureText(shape.text || "").width;
         const textHeight = 20; // approx font size
         return (
