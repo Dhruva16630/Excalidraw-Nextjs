@@ -6,6 +6,10 @@ import { Tool } from "./types";
 import ToolBar from "../components/ToolBar";
 import ZoomToolbar from "../components/ZoomToolbar";
 import Menu from "../components/Menu";
+import { MainMenuWelcome } from "../components/Welcome-screen";
+import { ToolMenuWelcome } from "../components/Welcome-screen";
+import { ZoomMenuWelcome } from "../components/Welcome-screen";
+import { HomeWelcome } from "../components/Welcome-screen";
 
 export default function CanvasBoard() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -93,6 +97,10 @@ export default function CanvasBoard() {
       <div className="fixed top-3 left-4">
         <Menu/>
       </div>
+      {engine?.saveShapesToLocalStorage  && <HomeWelcome />}
+      {engine?.saveShapesToLocalStorage  && <MainMenuWelcome />}
+      {engine?.saveShapesToLocalStorage && <ToolMenuWelcome />}
+      {engine?.saveShapesToLocalStorage && <ZoomMenuWelcome />}
     </div>
   );
 }

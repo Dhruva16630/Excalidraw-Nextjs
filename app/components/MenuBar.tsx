@@ -1,36 +1,69 @@
-import React from 'react'
+// import React from 'react'
 
+
+// const MenuBar = () => {
+    
+//     return (
+//         <div className='fixed left-4 top-14 bg-[#232329] text-gray-300 p-3 rounded-lg flex flex-col gap-2 z-[9999999] '>
+//             <a href='https://github.com/Dhruva16630' target='_blank'><h5><i className='ri-github-fill mr-3 text-xl'></i>Github</h5></a>
+//             <a href='https://x.com/chandru_dh24491' target='_blank'><h5><i className='ri-twitter-x-fill mr-3 text-lg'></i>X ( Twitter )</h5></a>
+//             <a href='https://www.linkedin.com/in/dhruva-kumar-c-041491264/' target='_blank'><h5><i className='ri-linkedin-box-fill mr-3 text-xl '></i>Linkedin</h5></a>
+//             <hr className='border-gray-700' />
+//             {/* <div className='flex flex-row items-center'>
+//                 Theme 
+//                 <div className='ml-8 flex gap-2 border border-gray-600 p-1 rounded-lg'>
+//                     <button onClick={()=>setTheme("light")}><i className='ri-sun-line px-1.5 py-1'></i></button>
+//                     <button onClick={()=>setTheme("dark")}><i className='ri-moon-line px-1.5 py-1'></i></button>
+//                     <button onClick={()=>setTheme("system")}><i className='ri-computer-line px-1.5 py-1'></i></button>
+//                 </div>
+//             </div>
+//             <hr className='border-gray-700' />
+//             <div>
+//                 Canvas background
+//                 <div className='flex gap-1 mt-1'>
+//                     <div className='w-4 h-4 bg-red-500 rounded'></div>
+//                     <div className='w-4 h-4 bg-blue-500 rounded'></div>
+//                     <div className='w-4 h-4 bg-yellow-500 rounded'></div>
+//                     <div className='w-4 h-4 bg-orange-500 rounded'></div>
+//                     <div className='w-4 h-4 bg-green-500 rounded'></div>
+//                 </div>
+
+//             </div> */}
+//         </div>
+//     )
+// }
+
+// export default MenuBar;
+
+
+
+import React, { useEffect, useState } from 'react'
+import { createPortal } from 'react-dom'
 
 const MenuBar = () => {
-    
-    return (
-        <div className='fixed left-4 top-14 bg-[#232329] text-gray-300 p-3 rounded-lg flex flex-col gap-2 '>
-            <a href='https://github.com/Dhruva16630' target='_blank'><h5><i className='ri-github-fill mr-3 text-xl'></i>Github</h5></a>
-            <a href='https://x.com/chandru_dh24491' target='_blank'><h5><i className='ri-twitter-x-fill mr-3 text-lg'></i>X ( Twitter )</h5></a>
-            <a href='https://www.linkedin.com/in/dhruva-kumar-c-041491264/' target='_blank'><h5><i className='ri-linkedin-box-fill mr-3 text-xl '></i>Linkedin</h5></a>
-            <hr className='border-gray-700' />
-            {/* <div className='flex flex-row items-center'>
-                Theme 
-                <div className='ml-8 flex gap-2 border border-gray-600 p-1 rounded-lg'>
-                    <button onClick={()=>setTheme("light")}><i className='ri-sun-line px-1.5 py-1'></i></button>
-                    <button onClick={()=>setTheme("dark")}><i className='ri-moon-line px-1.5 py-1'></i></button>
-                    <button onClick={()=>setTheme("system")}><i className='ri-computer-line px-1.5 py-1'></i></button>
-                </div>
-            </div>
-            <hr className='border-gray-700' />
-            <div>
-                Canvas background
-                <div className='flex gap-1 mt-1'>
-                    <div className='w-4 h-4 bg-red-500 rounded'></div>
-                    <div className='w-4 h-4 bg-blue-500 rounded'></div>
-                    <div className='w-4 h-4 bg-yellow-500 rounded'></div>
-                    <div className='w-4 h-4 bg-orange-500 rounded'></div>
-                    <div className='w-4 h-4 bg-green-500 rounded'></div>
-                </div>
+  const [mounted, setMounted] = useState(false)
+  useEffect(() => setMounted(true), [])
 
-            </div> */}
-        </div>
-    )
+  if (!mounted) return null
+
+  return createPortal(
+    <div
+      className="fixed left-4 top-14 bg-[#232329] text-gray-300 p-3 rounded-lg flex flex-col gap-2"
+      style={{ zIndex: 9999999 }} // very high so it's always on top
+    >
+      <a href="https://github.com/Dhruva16630" target="_blank" rel="noreferrer">
+        <h5><i className="ri-github-fill mr-3 text-xl"></i>Github</h5>
+      </a>
+      <a href="https://x.com/chandru_dh24491" target="_blank" rel="noreferrer">
+        <h5><i className="ri-twitter-x-fill mr-3 text-lg"></i>X (Twitter)</h5>
+      </a>
+      <a href="https://www.linkedin.com/in/dhruva-kumar-c-041491264/" target="_blank" rel="noreferrer">
+        <h5><i className="ri-linkedin-box-fill mr-3 text-xl"></i>LinkedIn</h5>
+      </a>
+      <hr className="border-gray-700" />
+    </div>,
+    document.body
+  )
 }
 
-export default MenuBar;
+export default MenuBar

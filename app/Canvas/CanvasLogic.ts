@@ -103,7 +103,7 @@ class CanvasLogic {
 
 
 
-  private saveShapesToLocalStorage() {
+  public saveShapesToLocalStorage() {
     localStorage.setItem("existingShapes", JSON.stringify(this.exsistingShapes));
   }
   initEventListeners() {
