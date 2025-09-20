@@ -8,7 +8,7 @@ import ZoomToolbar from "../components/ZoomToolbar";
 import Menu from "../components/Menu";
 import { MainMenuWelcome } from "../components/Welcome-screen";
 import { ToolMenuWelcome } from "../components/Welcome-screen";
-import { ZoomMenuWelcome } from "../components/Welcome-screen";
+// import { ZoomMenuWelcome } from "../components/Welcome-screen";
 import { HomeWelcome } from "../components/Welcome-screen";
 
 export default function CanvasBoard() {
@@ -100,7 +100,7 @@ export default function CanvasBoard() {
       {engine?.saveShapesToLocalStorage  && <HomeWelcome />}
       {engine?.saveShapesToLocalStorage  && <MainMenuWelcome />}
       {engine?.saveShapesToLocalStorage && <ToolMenuWelcome />}
-      {engine?.saveShapesToLocalStorage && <ZoomMenuWelcome />}
+      {/* {engine?.saveShapesToLocalStorage && <ZoomMenuWelcome />} */}
     </div>
   );
 }
