@@ -75,7 +75,7 @@ export default function CanvasBoard() {
     if (!engine) return;
 
     const interval = setInterval(() => {
-      setZoomPercentage(engine.getZoomedPercentage()); // keep sync with engine
+      setZoomPercentage(engine.getZoomedPercentage()); 
     }, 100);
 
     return () => clearInterval(interval);
@@ -102,7 +102,7 @@ export default function CanvasBoard() {
         />
         
       </div>
-      <div className="fixed top-3 left-4">
+      <div className="fixed md:top-3 left-4 bottom-3">
         <Menu/>
       </div>
       

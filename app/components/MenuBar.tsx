@@ -9,7 +9,7 @@ const MenuBar = () => {
 
   return createPortal(
     <div
-      className="fixed left-4 top-14 bg-[#232329] text-gray-300 p-3 rounded-lg flex flex-col gap-2"
+      className="fixed left-4 md:top-14 bottom-14  bg-[#232329] text-gray-300 p-3 rounded-lg flex flex-col gap-2"
       style={{ zIndex: 9999999 }} // very high so it's always on top
     >
       <a href="https://github.com/Dhruva16630" target="_blank" rel="noreferrer">
