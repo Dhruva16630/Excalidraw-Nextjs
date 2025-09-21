@@ -9,6 +9,7 @@ import Menu from "../components/Menu";
 import { MainMenuWelcome } from "../components/Welcome-screen";
 import { ToolMenuWelcome } from "../components/Welcome-screen";
 import { HomeWelcome } from "../components/Welcome-screen";
+import Loading from "../components/Loading";
 
 export default function CanvasBoard() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -16,6 +17,7 @@ export default function CanvasBoard() {
   const [tool, setTool] = useState<Tool>(null);
   const [zoomPercentage, setZoomPercentage] = useState(1);
   const [showWelcome, setShowWelcome] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
 
   const tools: { key: string, value: string }[] = [
@@ -46,7 +48,7 @@ export default function CanvasBoard() {
       setShowWelcome(true);
     }
 
-
+    setIsLoading(false);
 
     const handleResize = () => {
       canvas.width = window.innerWidth;
@@ -86,6 +88,11 @@ export default function CanvasBoard() {
 
   return (
     <div className="relative">
+      {isLoading && ( 
+        <div className="absolute inset-0 flex items-center justify-center bg-[#121212] z-50">
+          <Loading />
+        </div>
+      )}
       <canvas
         ref={canvasRef}
         className="w-screen h-screen bg-[#121212]"
