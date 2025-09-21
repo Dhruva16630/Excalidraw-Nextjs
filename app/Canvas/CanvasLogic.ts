@@ -11,7 +11,7 @@ class CanvasLogic {
   private isDrawing: boolean = false;
   private hasMoved: boolean = false;
   private tool: Tool = null;
-  private exsistingShapes: Shapes[] = [];
+  public exsistingShapes: Shapes[] = [];
   public shapeIdCounter: number = 0;
   private ERASER_SIZE = 10;
   private scale = 1;
@@ -85,6 +85,10 @@ class CanvasLogic {
     this.tool = tool;
     this.initEventListeners();
 
+  }
+
+  getShapesCount(): number {
+    return this.exsistingShapes.length;
   }
 
   private screenToWorld(x: number, y: number): { x: number; y: number } {

@@ -8,7 +8,6 @@ import ZoomToolbar from "../components/ZoomToolbar";
 import Menu from "../components/Menu";
 import { MainMenuWelcome } from "../components/Welcome-screen";
 import { ToolMenuWelcome } from "../components/Welcome-screen";
-// import { ZoomMenuWelcome } from "../components/Welcome-screen";
 import { HomeWelcome } from "../components/Welcome-screen";
 
 export default function CanvasBoard() {
@@ -16,6 +15,7 @@ export default function CanvasBoard() {
   const [engine, setEngine] = useState<CanvasLogic | null>(null);
   const [tool, setTool] = useState<Tool>(null);
   const [zoomPercentage, setZoomPercentage] = useState(1);
+  const [showWelcome, setShowWelcome] = useState(false);
 
 
   const tools: { key: string, value: string }[] = [
@@ -42,7 +42,9 @@ export default function CanvasBoard() {
     const engineInstance = new CanvasLogic(canvas);
     setEngine(engineInstance);
 
-
+    if (engineInstance.getShapesCount() === 0) {
+      setShowWelcome(true);
+    }
 
 
 
@@ -60,6 +62,10 @@ export default function CanvasBoard() {
     if (engine && tool) {
       engine.setTool(tool);
 
+      if(showWelcome){
+        setShowWelcome(false)
+      }
+
     }
 
   }, [tool, engine])
@@ -74,6 +80,8 @@ export default function CanvasBoard() {
 
     return () => clearInterval(interval);
   }, [engine]);
+
+ 
 
 
   return (
@@ -97,10 +105,17 @@ export default function CanvasBoard() {
       <div className="fixed top-3 left-4">
         <Menu/>
       </div>
-      {engine?.saveShapesToLocalStorage  && <HomeWelcome />}
-      {engine?.saveShapesToLocalStorage  && <MainMenuWelcome />}
-      {engine?.saveShapesToLocalStorage && <ToolMenuWelcome />}
-      {/* {engine?.saveShapesToLocalStorage && <ZoomMenuWelcome />} */}
+      
+      { showWelcome && (
+      <>
+        <HomeWelcome />
+        <MainMenuWelcome />
+        <ToolMenuWelcome />
+      </>
+    )}
+      
+      
+      
     </div>
   );
 }
