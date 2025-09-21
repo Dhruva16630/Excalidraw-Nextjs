@@ -3,7 +3,7 @@ import SignInButton from "./SignInButton";
 
 export const MainMenuWelcome = () => {
     return (
-        <div className="fixed top-14 left-6 flex items-center-safe ">
+        <div className=" hidden md:fixed top-14 left-6 md:flex items-center-safe ">
             <svg className="text-gray-500 max-w-11 ">
                 <defs>
                     <marker
@@ -29,7 +29,7 @@ export const MainMenuWelcome = () => {
                 />
             </svg>
 
-            <p className="excalifont text-gray-500 fixed left-18 top-32 text-md ">
+            <p className="excalifont text-gray-500 fixed left-18 top-32 text-md md:w-32 ">
                 Sign In, Github, X, Linkedin
             </p>
         </div>
@@ -40,7 +40,7 @@ export const MainMenuWelcome = () => {
 
 export const ToolMenuWelcome = () => {
     return (
-        <div className="fixed top-18 left-1/2 flex items-center-safe ">
+        <div className="hidden md:fixed top-18 md:left-1/2 md:flex items-center-safe ">
             <svg className="text-gray-500">
                 <defs>
                     <marker
@@ -67,7 +67,8 @@ export const ToolMenuWelcome = () => {
             </svg>
 
 
-            <p className="excalifont text-gray-500 fixed left-5/12 text-md ">
+            {/* <p className="excalifont text-gray-500 md:fixed md:left-2/6 2xl:left-[calc(100% - 50%)] lg:left-2/5 xl:left-5/12 text-md "> */}
+            <p className="excalifont text-gray-500 md:fixed md:left-2/6 2xl:left-[calc(100%-55%)] lg:left-2/5 xl:left-5/12 text-md">
                 Pick a tool & <br /> Start Drawing !
             </p>
         </div>
@@ -118,12 +119,12 @@ export const ToolMenuWelcome = () => {
 
 export function HomeWelcome() {
     return (
-        <div className="fixed excalifont top-7/12 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center-safe text-white text-4xl">
+        <div className="fixed excalifont top-7/12 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center-safe text-white text-3xl md:text-4xl">
             <div className="flex flex-row items-center">
                 {/* <img src="" alt="Logo1" className="w-20 h-20" /> */}
                 <h1>SKETCHYBOARD</h1>
             </div>
-            <h5 className="text-gray-500 text-lg excalifont mt-2">Everything is kept <span className="text-[#a8a5ff] mr-1.5">PRIVATE</span>
+            <h5 className="text-gray-500 text-lg text-center excalifont mt-2">Everything is kept <span className="text-[#a8a5ff] mr-1.5">PRIVATE</span>
                 and stored only on your device.</h5>
             <div className="mt-7 gap-1">
                 <SignInButton />
