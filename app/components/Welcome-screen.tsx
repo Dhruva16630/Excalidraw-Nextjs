@@ -82,7 +82,7 @@ export function HomeWelcome() {
         <div className="fixed excalifont top-7/12 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center-safe text-white text-3xl md:text-4xl">
             <div className="flex flex-row items-center">
                 {/* <img src="" alt="Logo1" className="w-20 h-20" /> */}
-                <h1>SKETCHYBOARDTest</h1>
+                <h1>SKETCHYBOARD</h1>
             </div>
             <h5 className="text-gray-500 text-lg text-center excalifont mt-2">Everything is kept <span className="text-[#a8a5ff] mr-1.5">PRIVATE</span>
                 and stored only on your device.</h5>
