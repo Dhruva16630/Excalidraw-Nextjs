@@ -1,4 +1,5 @@
 import React from "react";
+import Image from "next/image";
 
 interface ButtonsProps {
   onClick: () => void;
@@ -30,7 +31,7 @@ const Buttons: React.FC<ButtonsProps> = ({
       {icon && <span>{icon}</span>}
 
       {/* Optional Image */}
-      {imgSrc && <img src={imgSrc} alt="button-img" className="w-5 h-5" />}
+      {imgSrc && <Image src={imgSrc} alt="button-img" className="w-5 h-5" />}
 
       {/* Optional Text */}
       {text && <span>{text}</span>}

@@ -20,17 +20,17 @@ export default function CanvasBoard() {
   const [isLoading, setIsLoading] = useState(true);
 
 
-  const tools: { key: string, value: string }[] = [
-    { key: "grab", value: "Grab" },
-    { key: "rectangle", value: "Rect" },
-    { key: "circle", value: "Circle" },
-    { key: "diamond", value: "Diamond" },
-    { key: "pencil", value: "Pencil" },
-    { key: "line", value: "Line" },
-    { key: "arrow", value: "Arrow" },
-    { key: "text", value: "Write" },
-    { key: "eraser", value: "Eraser" }
-  ]
+  // const tools: { key: string, value: string }[] = [
+  //   { key: "grab", value: "Grab" },
+  //   { key: "rectangle", value: "Rect" },
+  //   { key: "circle", value: "Circle" },
+  //   { key: "diamond", value: "Diamond" },
+  //   { key: "pencil", value: "Pencil" },
+  //   { key: "line", value: "Line" },
+  //   { key: "arrow", value: "Arrow" },
+  //   { key: "text", value: "Write" },
+  //   { key: "eraser", value: "Eraser" }
+  // ]
 
   useEffect(() => {
     if (!canvasRef.current) return;
@@ -70,7 +70,7 @@ export default function CanvasBoard() {
 
     }
 
-  }, [tool, engine])
+  }, [tool, engine,showWelcome])
 
 
   useEffect(() => {
